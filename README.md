@@ -1,17 +1,32 @@
-# myportofolio_mobile
+Name : Raden Stanislaus Airell Prakosa Sinaga
+NPM : 2506657251
+Kelas : [E]
 
-A new Flutter project.
+### Tugas 7
 
-## Getting Started
+1. Widget tree adalah susunan bertingkat seluruh widget yang membentuk tampilan aplikasi Flutter, dimulai dari satu widget akar lalu bercabang ke widget anak lewat properti `child` atau `children`. Hubungan induk-anak bekerja dalam tiga arah. Induk membuat anak dan meneruskan data lewat konstruktor, misalnya `MyHomePage` meneruskan `title`, `content`, dan `icon` ke setiap `InfoCard`. Induk juga memberi batasan ukuran ke anak, lalu anak menentukan ukurannya sendiri di dalam batasan itu, misalnya `Expanded` di dalam `Row` membagi lebar secara rata untuk ketiga `InfoCard`. Sebaliknya, anak bisa mengambil data dari leluhurnya lewat `BuildContext`, misalnya `Theme.of(context)` untuk mengambil warna tema dari `MaterialApp`. Susunan aplikasi saya kurang lebih `MyApp` → `MaterialApp` → `MyHomePage` → `Scaffold` → (`AppBar`, `SingleChildScrollView` → `Column` → baris `InfoCard` dan grid `ItemCard`).
+2. Widget yang saya gunakan: `MaterialApp` untuk judul, tema, dan halaman awal; `Scaffold` sebagai kerangka halaman sekaligus tempat SnackBar; `AppBar` untuk bar judul; `Text` dan `Icon` untuk teks dan ikon; `SingleChildScrollView` agar halaman bisa digulir dan tidak overflow; `Center` dan `ConstrainedBox` untuk menaruh konten di tengah dan membatasi lebarnya di layar lebar; `Column` dan `Row` untuk menyusun widget vertikal dan horizontal; `Expanded` untuk membagi lebar `Row` secara rata; `IntrinsicHeight` agar ketiga `InfoCard` sama tinggi; `SizedBox` dan `Padding` untuk jarak; `LayoutBuilder` untuk menentukan jumlah kolom tombol (2 atau 4) dari lebar layar; `GridView.count` untuk menampilkan tombol dalam bentuk kisi; `Card` sebagai dasar `InfoCard`; `Material` dan `InkWell` untuk warna latar tombol dan mendeteksi ketukan dengan efek ripple; `Tooltip` untuk penjelasan singkat tiap tombol; dan `SnackBar` lewat `ScaffoldMessenger` untuk pesan setelah tombol ditekan. Selain itu ada widget buatan sendiri, yaitu `MyApp`, `MyHomePage`, `InfoCard`, dan `ItemCard`.
+3. `MaterialApp` menyiapkan kebutuhan tingkat aplikasi bergaya Material Design: judul, tema (`ThemeData`), halaman awal (`home`), navigasi (`Navigator`), serta pengaturan bahasa dan arah teks. Widget ini dijadikan root karena banyak widget Material membutuhkan sesuatu yang disediakannya dari atas. Di proyek saya, `Theme.of(context)` membutuhkan tema dari `MaterialApp`, SnackBar membutuhkan `ScaffoldMessenger` yang dibuat `MaterialApp`, dan `Tooltip` membutuhkan `Overlay` dari `Navigator` milik `MaterialApp`. Dengan menaruhnya di akar, semua widget di bawahnya otomatis bisa memakai tema dan layanan tersebut, jadi pengaturannya cukup ditulis sekali.
+4. `StatelessWidget` tidak menyimpan data yang berubah; semua field-nya `final`, dan tampilannya hanya di-build ulang kalau induknya memberi konfigurasi baru. `StatefulWidget` punya objek `State` terpisah yang menyimpan data yang bisa berubah, dan bisa mem-build ulang dirinya sendiri dengan `setState()`. `StatelessWidget` dipilih ketika tampilan hanya bergantung pada data tetap atau data dari induknya, sehingga semua widget buatan saya (`MyApp`, `MyHomePage`, `InfoCard`, `ItemCard`) berupa `StatelessWidget`: identitas dan daftar tombolnya tidak berubah selama aplikasi berjalan, dan SnackBar dikelola oleh `ScaffoldMessenger`, bukan oleh widget saya. `StatefulWidget` dipilih ketika tampilan harus berubah karena interaksi atau data yang datang belakangan, misalnya penghitung, isian formulir, tombol star yang berganti status, atau daftar Experience yang nanti diambil dari API Django.
+5. `BuildContext` adalah objek yang menunjukkan posisi sebuah widget di dalam widget tree. Flutter memberikannya sebagai parameter `build(BuildContext context)`, dan context inilah yang dipakai untuk mencari data atau layanan dari leluhur, dengan pencarian yang selalu berjalan ke atas. Di proyek saya, `Theme.of(context).colorScheme` dipakai di `MyHomePage` dan `InfoCard` untuk mengambil warna tema, `ScaffoldMessenger.of(context)` dipakai di `ItemCard` untuk menampilkan SnackBar, dan `LayoutBuilder` memberikan `context` serta `constraints` untuk menentukan jumlah kolom tombol. Context harus berada di bawah widget yang dicari; `ScaffoldMessenger.of(context)` di `ItemCard` berhasil karena `ItemCard` berada di bawah `MaterialApp`.
+6. Hot reload (tombol `r`) menyuntikkan kode Dart yang berubah ke aplikasi yang sedang berjalan lalu mem-build ulang widget tree, dengan state aplikasi tetap dipertahankan, sehingga perubahan tampilan langsung terlihat. Hot restart (tombol `R`) memuat ulang seluruh kode Dart dan menjalankan aplikasi lagi dari `main()`, sehingga state kembali ke kondisi awal, tetapi tetap lebih cepat daripada menjalankan ulang aplikasi sepenuhnya. Hot reload tidak cukup ketika perubahan ada di kode yang hanya dijalankan sekali (seperti `main()` atau `initState()`), ketika nilai awal variabel global atau field `static` diubah, atau ketika struktur tipe berubah (misalnya `enum` diubah menjadi kelas); untuk kasus ini perlu hot restart. Full restart (menghentikan aplikasi lalu menjalankan `flutter run` lagi) diperlukan ketika perubahan ada di luar kode Dart, misalnya menambah dependensi atau aset di `pubspec.yaml`, atau mengubah konfigurasi native.
 
-This project is a starting point for a Flutter application.
+### Fitur tambahan di luar instruksi Tugas 7:
 
-A few resources to get you started if this is your first Flutter project:
+* Tombol keempat (Lihat Proyek) selain tiga tombol minimal, masing-masing dengan warna berbeda yang diatur lewat atribut `color` pada model `ItemHomepage`.
+* Tooltip penjelasan pada setiap tombol, muncul saat kursor diarahkan (web) atau saat tombol ditekan lama (mobile).
+* SnackBar melayang yang warnanya sama dengan tombol yang ditekan, dilengkapi ikon dan tombol tutup.
+* Tata letak responsif: tombol tampil 2 kolom di ponsel dan 4 kolom di layar lebar, lebar konten dibatasi di Chrome, halaman bisa digulir, dan ketiga `InfoCard` dibuat sama tinggi.
+* Model dan widget dipisah ke `lib/models/` dan `lib/widgets/` dengan komentar dokumentasi (`///`), serta 6 widget test di `test/widget_test.dart` yang memeriksa data `InfoCard`, warna tombol, dan pesan SnackBar.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### AI Disclosure
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Dalam proses pembelajaran dan pengerjaan Tutorial 08 dan Tugas 7 ini, saya memanfaatkan bantuan kecerdasan buatan (AI) yaitu Claude untuk:
+
+* Berdiskusi dan memahami konsep dasar Flutter secara umum, seperti widget tree, `MaterialApp`, perbedaan `StatelessWidget` dan `StatefulWidget`, `BuildContext`, serta hot reload dan hot restart.
+* Mempelajari penyusunan layout dan interaksi, seperti `Row`, `Column`, `Expanded`, `GridView`, `InkWell`, `SnackBar`, `Tooltip`, dan perancangan model data untuk warna tombol.
+* Memandu instalasi Flutter SDK dan langkah Tutorial 08, serta membantu menulis kode Tugas 7 (model `ItemHomepage`, widget `InfoCard` dan `ItemCard`, `menu.dart`, dan widget test).
+
+Kode dari AI tidak bisa diuji langsung oleh AI karena Flutter tidak dapat dijalankan di lingkungannya, sehingga saya sendiri yang menjalankan `flutter analyze`, `flutter test`, dan `flutter run -d chrome` untuk memastikan semuanya berjalan, lalu mengoreksi AI ketika sarannya keluar dari langkah di PDF tutorial. Data identitas, pilihan bagian portofolio, serta seluruh commit dan push dilakukan oleh saya sendiri.
+log
+log percakapan: (https://chatgpt.com/share/6afaf942-5f6c-83ec-b528-33f11dba2355)
