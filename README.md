@@ -49,6 +49,6 @@ Dalam proses pembelajaran dan pengerjaan Tutorial 08 dan Tugas 7 ini, saya meman
 
 Kode dari AI tidak bisa diuji langsung oleh AI karena Flutter tidak dapat dijalankan di lingkungannya, sehingga saya sendiri yang menjalankan `flutter analyze`, `flutter test`, dan `flutter run -d chrome` untuk memastikan semuanya berjalan, lalu mengoreksi AI ketika sarannya keluar dari langkah di PDF tutorial. Data identitas, pilihan bagian portofolio, serta seluruh commit dan push dilakukan oleh saya sendiri.
 
-Strategi prompting yang saya pakai: untuk belajar, saya mengajukan sekitar 20 pertanyaan konsep umum tanpa melampirkan berkas tugas; untuk pengerjaan, saya memberikan PDF tutorial dan tugas sebagai acuan, meminta AI menjelaskan setiap perubahan beserta file yang terdampak, dan mengirim tangkapan layar terminal setiap kali ada error.
+Strategi prompting yang saya pakai: saya menggunakan ChatGPT untuk bertanya tentang konsep-konsep dasar Flutter yang belum saya pahami.
 
 log percakapan: (https://chatgpt.com/share/6afaf942-5f6c-83ec-b528-33f11dba2355)
