@@ -1,165 +1,148 @@
 import 'package:flutter/material.dart';
+import 'package:myportofolio_mobile/models/item_homepage.dart';
+import 'package:myportofolio_mobile/widgets/info_card.dart';
+import 'package:myportofolio_mobile/widgets/item_card.dart';
 
+/// Halaman menu utama aplikasi MyPortfolio Mobile.
+///
+/// Halaman ini hanya menampilkan data yang tetap (identitas pemilik dan daftar
+/// tombol aksi), sehingga dibuat sebagai [StatelessWidget] dengan konstruktor
+/// `const`. Komponen kartunya dipisah ke `widgets/` dan model datanya ke
+/// `models/` agar berkas ini fokus pada susunan halaman.
 class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
-  final String npm = "2406000001";
-  final String nama = "Burhan";
-  final String kelas = "PBP A";
+  /// Lebar maksimum konten agar tampilan tetap proporsional di layar lebar
+  /// (misalnya saat dijalankan di Chrome).
+  static const double _maxContentWidth = 720.0;
 
-  final List<ItemHomepage> items = [
-    ItemHomepage("Lihat Proyek", Icons.folder),
-    ItemHomepage("Tambah Proyek", Icons.add_circle),
-    ItemHomepage("Logout", Icons.logout),
+  /// Batas lebar untuk menampilkan tombol dalam 4 kolom; di bawahnya 2 kolom.
+  static const double _wideLayoutBreakpoint = 600.0;
+
+  /// NPM pemilik portofolio.
+  final String npm = '2506657251';
+
+  /// Nama lengkap pemilik portofolio.
+  final String nama = 'Raden Stanislaus Airell Prakosa Sinaga';
+
+  /// Kelas PBP pemilik portofolio.
+  final String kelas = 'E';
+
+  /// Daftar tombol aksi portofolio. Setiap tombol memiliki warna latar yang
+  /// berbeda dan kontras satu sama lain.
+  final List<ItemHomepage> items = const [
+    ItemHomepage(
+      'Lihat Experience',
+      Icons.work,
+      Color(0xFF1565C0), // biru
+      description: 'Lihat daftar pengalaman (Experience) di portofolio',
+    ),
+    ItemHomepage(
+      'Tambah Experience',
+      Icons.add_circle,
+      Color(0xFF2E7D32), // hijau
+      description: 'Tambahkan pengalaman baru ke portofolio',
+    ),
+    ItemHomepage(
+      'Lihat Proyek',
+      Icons.folder,
+      Color(0xFF6A1B9A), // ungu
+      description: 'Lihat daftar proyek di portofolio',
+    ),
+    ItemHomepage(
+      'Logout',
+      Icons.logout,
+      Color(0xFFC62828), // merah
+      description: 'Keluar dari akun portofolio',
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    // Scaffold menyediakan struktur visual dasar halaman (AppBar, Body, SnackBar).
+    final colorScheme = Theme.of(context).colorScheme;
+
+    // Scaffold menyediakan struktur visual dasar halaman (AppBar, body,
+    // dan tempat SnackBar ditampilkan).
     return Scaffold(
-      // AppBar menampilkan bar bagian atas halaman aplikasi.
       appBar: AppBar(
         title: const Text(
           'MyPortfolio',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: colorScheme.primary,
       ),
-      // Body halaman utama dengan padding di sekelilingnya.
-      body: Padding(
+      // SingleChildScrollView mencegah overflow ketika layar pendek atau
+      // ketika orientasi perangkat diputar.
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Baris horizontal untuk menampilkan 3 InfoCard secara sejajar.
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                InfoCard(title: 'NPM', content: npm),
-                InfoCard(title: 'Name', content: nama),
-                InfoCard(title: 'Class', content: kelas),
-              ],
-            ),
-
-            const SizedBox(height: 16.0),
-
-            // Bagian tengah: pesan sambutan dan kisi tombol menu portofolio.
-            Center(
-              child: Column(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: Text(
-                      'Selamat datang di MyPortfolio Mobile!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-
-                  // GridView menampilkan kartu tombol dalam tata letak kisi 3 kolom.
-                  GridView.count(
-                    primary: true,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    // shrinkWrap agar ukuran kisi menyesuaikan tinggi konten anak.
-                    shrinkWrap: true,
-                    children: items.map((ItemHomepage item) {
-                      return ItemCard(item);
-                    }).toList(),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class InfoCard extends StatelessWidget {
-  // Kartu informasi yang menampilkan judul (title) dan isi (content).
-  final String title;
-  final String content;
-
-  const InfoCard({super.key, required this.title, required this.content});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      // Memberikan efek bayangan kartu elevasi 2 unit.
-      elevation: 2.0,
-      child: Container(
-        // Menyesuaikan lebar kartu dengan proporsi layar (dibagi 3.5).
-        width: MediaQuery.of(context).size.width / 3.5,
-        padding: const EdgeInsets.all(16.0),
-        // Menyusun teks title dan content secara vertikal.
-        child: Column(
-          children: [
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8.0),
-            Text(content),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ItemHomepage {
-  final String name;
-  final IconData icon;
-
-  ItemHomepage(this.name, this.icon);
-}
-
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-
-  const ItemCard(this.item, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      // Menggunakan warna sekunder dari skema tema aplikasi.
-      color: Theme.of(context).colorScheme.secondary,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        // Aksi ketika kartu ditekan oleh pengguna.
-        onTap: () {
-          // Menampilkan SnackBar dengan pesan interaktif.
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
-            );
-        },
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _maxContentWidth),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
+                // IntrinsicHeight membuat ketiga InfoCard sama tinggi
+                // walaupun isi kartu Name lebih panjang dari yang lain.
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: InfoCard(
+                          title: 'NPM',
+                          content: npm,
+                          icon: Icons.badge,
+                        ),
+                      ),
+                      Expanded(
+                        child: InfoCard(
+                          title: 'Name',
+                          content: nama,
+                          icon: Icons.person,
+                        ),
+                      ),
+                      Expanded(
+                        child: InfoCard(
+                          title: 'Class',
+                          content: kelas,
+                          icon: Icons.class_,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
+                const SizedBox(height: 24.0),
+                const Text(
+                  'Selamat datang di MyPortfolio Mobile!',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                ),
+                const SizedBox(height: 4.0),
+                Text(
+                  'Pilih menu di bawah untuk mengelola portofolio kamu.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                ),
+                const SizedBox(height: 16.0),
+                // LayoutBuilder menyesuaikan jumlah kolom dengan lebar layar:
+                // 2 kolom di ponsel, 4 kolom di layar lebar.
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final crossAxisCount =
+                        constraints.maxWidth >= _wideLayoutBreakpoint ? 4 : 2;
+
+                    return GridView.count(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      // shrinkWrap + NeverScrollableScrollPhysics agar grid
+                      // mengikuti tinggi isinya dan ikut digulir bersama
+                      // halaman, bukan menggulir sendiri.
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: items.map((item) => ItemCard(item)).toList(),
+                    );
+                  },
                 ),
               ],
             ),
