@@ -1,30 +1,54 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:myportofolio_mobile/main.dart';
+import 'package:myportofolio_mobile/menu.dart';
+import 'package:myportofolio_mobile/widgets/item_card.dart';
+
+/// Memasang aplikasi pada layar uji yang cukup tinggi agar seluruh tombol
+/// terlihat tanpa perlu menggulir.
+Future<void> pumpApp(WidgetTester tester) async {
+  await tester.binding.setSurfaceSize(const Size(800, 1200));
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+  await tester.pumpWidget(const MyApp());
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  const page = MyHomePage();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('InfoCard menampilkan identitas pemilik portofolio', (
+    tester,
+  ) async {
+    await pumpApp(tester);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text(page.npm), findsOneWidget);
+    expect(find.text(page.nama), findsOneWidget);
+    expect(find.text(page.kelas), findsOneWidget);
   });
+
+  test('Minimal ada 3 tombol aksi dan warnanya unik', () {
+    final colors = page.items.map((item) => item.color).toSet();
+
+    expect(page.items.length, greaterThanOrEqualTo(3));
+    expect(colors.length, page.items.length);
+  });
+
+  for (final item in page.items) {
+    testWidgets('Tombol ${item.name} berwarna sesuai dan memunculkan SnackBar', (
+      tester,
+    ) async {
+      await pumpApp(tester);
+
+      final card = find.widgetWithText(ItemCard, item.name);
+      final material = tester.widget<Material>(
+        find.descendant(of: card, matching: find.byType(Material)).first,
+      );
+      expect(material.color, item.color);
+
+      await tester.tap(card);
+      await tester.pump();
+
+      expect(find.text(ItemCard.snackBarMessage(item.name)), findsOneWidget);
+    });
+  }
 }
