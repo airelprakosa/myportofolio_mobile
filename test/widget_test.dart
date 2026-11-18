@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:myportofolio_mobile/main.dart';
-import 'package:myportofolio_mobile/menu.dart';
-import 'package:myportofolio_mobile/widgets/item_card.dart';
+import 'package:myportofolio_mobile/screens/menu.dart';
+import 'package:myportofolio_mobile/widgets/project_card.dart';
 
 /// Memasang aplikasi pada layar uji yang cukup tinggi agar seluruh tombol
 /// terlihat tanpa perlu menggulir.
@@ -48,7 +48,18 @@ void main() {
       await tester.tap(card);
       await tester.pump();
 
-      expect(find.text(ItemCard.snackBarMessage(item.name)), findsOneWidget);
+      expect(find.text(ItemCard.snackBarMessage(item.name)), findsWidgets);
     });
   }
+
+  testWidgets('Tombol Tambah Proyek membuka halaman form proyek', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.widgetWithText(ItemCard, 'Tambah Proyek'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add Project Form'), findsOneWidget);
+  });
 }
