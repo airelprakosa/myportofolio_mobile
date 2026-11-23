@@ -1,11 +1,14 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 
 /// Drawer menu di sisi kiri layar untuk berpindah antarhalaman aplikasi.
 ///
-/// Dipasang pada `Scaffold` halaman menu utama dan halaman form proyek,
-/// sehingga navigasi tetap dapat diakses dari kedua halaman tersebut.
+/// Dipasang pada `Scaffold` halaman menu utama, halaman form proyek, dan
+/// halaman form Experience, sehingga navigasi tetap dapat diakses dari semua
+/// halaman tersebut. Opsi drawer memakai `pushReplacement` agar halaman tidak
+/// menumpuk di stack setiap kali pengguna berpindah lewat drawer.
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
 
@@ -21,8 +24,13 @@ class LeftDrawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // maxLines + ellipsis menjaga teks tetap muat di dalam
+                // DrawerHeader yang tingginya tetap, termasuk saat ukuran
+                // font perangkat diperbesar.
                 Text(
                   'My Portfolio',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -32,6 +40,8 @@ class LeftDrawer extends StatelessWidget {
                 SizedBox(height: 10),
                 Text(
                   'Explore personal projects and experiences!',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,
@@ -62,6 +72,19 @@ class LeftDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const ProjectFormPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.work_outline),
+            title: const Text('Add Experience'),
+            // Navigasi ke halaman tambah pengalaman
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExperienceFormPage(),
                 ),
               );
             },
