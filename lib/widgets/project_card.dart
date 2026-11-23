@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:myportofolio_mobile/models/item_homepage.dart';
+import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 
 /// Kartu tombol aksi pada halaman menu utama.
@@ -7,8 +8,9 @@ import 'package:myportofolio_mobile/screens/project_form.dart';
 /// Warna latar diambil langsung dari [ItemHomepage.color], sehingga setiap
 /// tombol memiliki warna unik tanpa logika pewarnaan yang berulang. Saat
 /// ditekan, kartu menampilkan SnackBar berisi nama tombol tersebut, lalu
-/// berpindah ke halaman yang sesuai (misalnya tombol "Tambah Proyek" membuka
-/// [ProjectFormPage]).
+/// berpindah ke halaman yang sesuai (tombol "Tambah Proyek" membuka
+/// [ProjectFormPage] dan tombol "Tambah Experience" membuka
+/// [ExperienceFormPage]).
 class ItemCard extends StatelessWidget {
   /// Data tombol (nama, ikon, warna, dan deskripsi) yang ditampilkan.
   final ItemHomepage item;
@@ -52,6 +54,18 @@ class ItemCard extends StatelessWidget {
       );
   }
 
+  /// Menentukan halaman tujuan berdasarkan nama tombol.
+  ///
+  /// Mengembalikan `null` untuk tombol yang belum memiliki halaman sendiri,
+  /// sehingga tombol tersebut hanya menampilkan SnackBar.
+  Widget? _destinationPage() {
+    return switch (item.name) {
+      'Tambah Proyek' => const ProjectFormPage(),
+      'Tambah Experience' => const ExperienceFormPage(),
+      _ => null,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final card = Material(
@@ -65,13 +79,13 @@ class ItemCard extends StatelessWidget {
         onTap: () {
           _showSnackBar(context);
 
-          // Navigate ke halaman yang sesuai
-          if (item.name == "Tambah Proyek") {
+          // Navigate ke halaman yang sesuai. push() dipakai agar pengguna
+          // dapat kembali ke menu dengan tombol Back perangkat/browser.
+          final destination = _destinationPage();
+          if (destination != null) {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const ProjectFormPage(),
-              ),
+              MaterialPageRoute(builder: (context) => destination),
             );
           }
         },
