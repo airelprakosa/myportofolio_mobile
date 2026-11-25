@@ -2,15 +2,19 @@ import 'package:material_ui/material_ui.dart';
 import 'package:myportofolio_mobile/models/item_homepage.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:provider/provider.dart';
 
 /// Kartu tombol aksi pada halaman menu utama.
 ///
 /// Warna latar diambil langsung dari [ItemHomepage.color], sehingga setiap
 /// tombol memiliki warna unik tanpa logika pewarnaan yang berulang. Saat
 /// ditekan, kartu menampilkan SnackBar berisi nama tombol tersebut, lalu
-/// berpindah ke halaman yang sesuai (tombol "Tambah Proyek" membuka
-/// [ProjectFormPage] dan tombol "Tambah Experience" membuka
-/// [ExperienceFormPage]).
+/// berpindah ke halaman yang sesuai: tombol "Tambah Proyek" membuka
+/// [ProjectFormPage] setelah memastikan pengguna login, tombol
+/// "Tambah Experience" membuka [ExperienceFormPage], dan tombol "Logout"
+/// mencabut token sesi.
 class ItemCard extends StatelessWidget {
   /// Data tombol (nama, ikon, warna, dan deskripsi) yang ditampilkan.
   final ItemHomepage item;
@@ -54,16 +58,47 @@ class ItemCard extends StatelessWidget {
       );
   }
 
-  /// Menentukan halaman tujuan berdasarkan nama tombol.
+  /// Menjalankan aksi sesuai nama tombol setelah SnackBar ditampilkan.
   ///
-  /// Mengembalikan `null` untuk tombol yang belum memiliki halaman sendiri,
-  /// sehingga tombol tersebut hanya menampilkan SnackBar.
-  Widget? _destinationPage() {
-    return switch (item.name) {
-      'Tambah Proyek' => const ProjectFormPage(),
-      'Tambah Experience' => const ExperienceFormPage(),
-      _ => null,
-    };
+  /// `Navigator.push()` dipakai agar pengguna dapat kembali ke menu dengan
+  /// tombol Back perangkat/browser.
+  Future<void> _handleTap(BuildContext context) async {
+    _showSnackBar(context);
+
+    switch (item.name) {
+      case 'Tambah Proyek':
+        // Form proyek mengirim data ke server, jadi wajib login dulu.
+        final loggedIn = await ensureLoggedIn(context);
+        if (!loggedIn || !context.mounted) {
+          return;
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProjectFormPage()),
+        );
+      case 'Tambah Experience':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ExperienceFormPage()),
+        );
+      case 'Logout':
+        await _logout(context);
+    }
+  }
+
+  /// Mencabut token jika pengguna sedang login, lalu memberi tahu pengguna.
+  Future<void> _logout(BuildContext context) async {
+    final auth = context.read<AuthState>();
+    if (!auth.isLoggedIn) {
+      return;
+    }
+    await auth.logout();
+    if (!context.mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(const SnackBar(content: Text('Kamu berhasil logout.')));
   }
 
   @override
@@ -76,19 +111,7 @@ class ItemCard extends StatelessWidget {
       child: InkWell(
         // borderRadius yang sama agar efek ripple tidak keluar dari sudut.
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          _showSnackBar(context);
-
-          // Navigate ke halaman yang sesuai. push() dipakai agar pengguna
-          // dapat kembali ke menu dengan tombol Back perangkat/browser.
-          final destination = _destinationPage();
-          if (destination != null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => destination),
-            );
-          }
-        },
+        onTap: () => _handleTap(context),
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Column(
