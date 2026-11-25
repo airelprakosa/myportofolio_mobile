@@ -35,10 +35,7 @@ class InfoCard extends StatelessWidget {
           children: [
             Icon(icon, color: colorScheme.primary),
             const SizedBox(height: 8.0),
-            Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 4.0),
             // textAlign center supaya isi yang panjang (misalnya nama
             // lengkap) tetap rapi ketika turun ke beberapa baris.

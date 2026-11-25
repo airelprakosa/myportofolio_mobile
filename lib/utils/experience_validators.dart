@@ -58,7 +58,8 @@ class ExperienceValidators {
       return 'URL thumbnail maksimal $thumbnailMaxLength karakter!';
     }
     final uri = Uri.tryParse(text);
-    final isWebUrl = uri != null &&
+    final isWebUrl =
+        uri != null &&
         (uri.scheme == 'http' || uri.scheme == 'https') &&
         uri.host.isNotEmpty;
     if (!isWebUrl) {

@@ -23,10 +23,5 @@ class ItemHomepage {
   /// Boleh dikosongkan; jika kosong, tooltip tidak ditampilkan.
   final String description;
 
-  const ItemHomepage(
-    this.name,
-    this.icon,
-    this.color, {
-    this.description = '',
-  });
+  const ItemHomepage(this.name, this.icon, this.color, {this.description = ''});
 }

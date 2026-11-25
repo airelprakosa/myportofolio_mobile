@@ -194,9 +194,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
       labelText: label,
       hintText: hint,
       suffixIcon: suffixIcon,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5.0),
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
     );
   }
 
@@ -281,7 +279,8 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                           .toList(),
                       onChanged: (String? newValue) {
                         setState(() {
-                          _category = newValue ?? ExperienceCategory.defaultValue;
+                          _category =
+                              newValue ?? ExperienceCategory.defaultValue;
                         });
                       },
                     ),
