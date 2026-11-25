@@ -5,12 +5,14 @@ import 'package:myportofolio_mobile/main.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/widgets/project_card.dart';
 
+import 'helpers/fake_backend.dart';
+
 /// Memasang aplikasi pada layar uji yang cukup tinggi agar seluruh tombol
 /// terlihat tanpa perlu menggulir.
 Future<void> pumpApp(WidgetTester tester) async {
   await tester.binding.setSurfaceSize(const Size(800, 1200));
   addTearDown(() => tester.binding.setSurfaceSize(null));
-  await tester.pumpWidget(const MyApp());
+  await tester.pumpWidget(MyApp(apiClient: FakeBackend().apiClient));
 }
 
 void main() {
@@ -34,25 +36,26 @@ void main() {
   });
 
   for (final item in page.items) {
-    testWidgets('Tombol ${item.name} berwarna sesuai dan memunculkan SnackBar', (
-      tester,
-    ) async {
-      await pumpApp(tester);
+    testWidgets(
+      'Tombol ${item.name} berwarna sesuai dan memunculkan SnackBar',
+      (tester) async {
+        await pumpApp(tester);
 
-      final card = find.widgetWithText(ItemCard, item.name);
-      final material = tester.widget<Material>(
-        find.descendant(of: card, matching: find.byType(Material)).first,
-      );
-      expect(material.color, item.color);
+        final card = find.widgetWithText(ItemCard, item.name);
+        final material = tester.widget<Material>(
+          find.descendant(of: card, matching: find.byType(Material)).first,
+        );
+        expect(material.color, item.color);
 
-      await tester.tap(card);
-      await tester.pump();
+        await tester.tap(card);
+        await tester.pump();
 
-      expect(find.text(ItemCard.snackBarMessage(item.name)), findsWidgets);
-    });
+        expect(find.text(ItemCard.snackBarMessage(item.name)), findsWidgets);
+      },
+    );
   }
 
-  testWidgets('Tombol Tambah Proyek membuka halaman form proyek', (
+  testWidgets('Tombol Tambah Proyek meminta login sebelum membuka form', (
     tester,
   ) async {
     await pumpApp(tester);
@@ -60,6 +63,8 @@ void main() {
     await tester.tap(find.widgetWithText(ItemCard, 'Tambah Proyek'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Add Project Form'), findsOneWidget);
+    // Belum login, jadi yang terbuka adalah halaman login, bukan form.
+    expect(find.widgetWithText(AppBar, 'Login'), findsOneWidget);
+    expect(find.text('Add Project Form'), findsNothing);
   });
 }

@@ -44,7 +44,10 @@ void main() {
     });
 
     test('menerima URL http dan https yang valid', () {
-      expect(ExperienceValidators.thumbnail('https://example.com/a.png'), isNull);
+      expect(
+        ExperienceValidators.thumbnail('https://example.com/a.png'),
+        isNull,
+      );
       expect(ExperienceValidators.thumbnail('http://example.com'), isNull);
     });
 
@@ -77,16 +80,22 @@ void main() {
 
     test('tanggal selesai tidak wajib jika masih berlangsung', () {
       expect(
-        ExperienceValidators.endDate(null, DateTime(2026, 1, 10),
-            isOngoing: true),
+        ExperienceValidators.endDate(
+          null,
+          DateTime(2026, 1, 10),
+          isOngoing: true,
+        ),
         isNull,
       );
     });
 
     test('tanggal selesai wajib jika tidak sedang berlangsung', () {
       expect(
-        ExperienceValidators.endDate(null, DateTime(2026, 1, 10),
-            isOngoing: false),
+        ExperienceValidators.endDate(
+          null,
+          DateTime(2026, 1, 10),
+          isOngoing: false,
+        ),
         isNotNull,
       );
     });
@@ -94,13 +103,19 @@ void main() {
     test('tanggal selesai tidak boleh sebelum tanggal mulai', () {
       final start = DateTime(2026, 5, 1);
       expect(
-        ExperienceValidators.endDate(DateTime(2026, 4, 30), start,
-            isOngoing: false),
+        ExperienceValidators.endDate(
+          DateTime(2026, 4, 30),
+          start,
+          isOngoing: false,
+        ),
         isNotNull,
       );
       expect(
-        ExperienceValidators.endDate(DateTime(2026, 5, 1), start,
-            isOngoing: false),
+        ExperienceValidators.endDate(
+          DateTime(2026, 5, 1),
+          start,
+          isOngoing: false,
+        ),
         isNull,
       );
     });
@@ -113,7 +128,9 @@ void main() {
   test('ExperienceCategory sesuai pilihan model Django', () {
     expect(ExperienceCategory.choices.length, 6);
     expect(ExperienceCategory.labelOf('full-time'), 'Full-Time');
-    expect(ExperienceCategory.labelOf(ExperienceCategory.defaultValue),
-        'Full-Time');
+    expect(
+      ExperienceCategory.labelOf(ExperienceCategory.defaultValue),
+      'Full-Time',
+    );
   });
 }

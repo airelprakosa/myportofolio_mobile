@@ -5,6 +5,8 @@ import 'package:myportofolio_mobile/main.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
 import 'package:myportofolio_mobile/widgets/project_card.dart';
 
+import 'helpers/fake_backend.dart';
+
 /// Memasang [widget] pada layar uji yang cukup tinggi.
 Future<void> pumpScreen(WidgetTester tester, Widget widget) async {
   await tester.binding.setSurfaceSize(const Size(800, 1600));
@@ -30,7 +32,7 @@ void main() {
   testWidgets('Kartu Tambah Experience membuka form dan bisa kembali', (
     tester,
   ) async {
-    await pumpScreen(tester, const MyApp());
+    await pumpScreen(tester, MyApp(apiClient: FakeBackend().apiClient));
 
     await tester.tap(find.widgetWithText(ItemCard, 'Tambah Experience'));
     await tester.pumpAndSettle();
@@ -45,7 +47,7 @@ void main() {
   testWidgets('Drawer membuka form Experience dan opsi Home kembali ke menu', (
     tester,
   ) async {
-    await pumpScreen(tester, const MyApp());
+    await pumpScreen(tester, MyApp(apiClient: FakeBackend().apiClient));
 
     await openDrawer(tester);
     expect(find.text('Home'), findsOneWidget);
@@ -63,7 +65,10 @@ void main() {
   testWidgets('Simpan dengan isian kosong menampilkan pesan kesalahan', (
     tester,
   ) async {
-    await pumpScreen(tester, const MaterialApp(home: ExperienceFormPage()));
+    await pumpScreen(
+      tester,
+      buildTestApp(FakeBackend(), home: const ExperienceFormPage()),
+    );
 
     await tapSave(tester);
 
@@ -79,7 +84,10 @@ void main() {
   testWidgets('Simpan dengan isian valid menampilkan dialog ringkasan', (
     tester,
   ) async {
-    await pumpScreen(tester, const MaterialApp(home: ExperienceFormPage()));
+    await pumpScreen(
+      tester,
+      buildTestApp(FakeBackend(), home: const ExperienceFormPage()),
+    );
 
     await tester.enterText(
       find.widgetWithText(TextFormField, 'Posisi / Peran'),
